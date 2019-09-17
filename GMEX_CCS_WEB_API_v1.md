@@ -17,10 +17,10 @@ GMEX官方的生产环境：
 
 请求回应数据示例
 ```json
-# 发送请求消息
+// 发送请求消息
 {
     "channelId": "1", 
-    "apiKeyId":"4SAAAB%67RhcZhZzD3JFZqRbABZA"
+    "apiKeyId":"4SAAAB%67RhcZhZzD3JFZqRbABZA",
     "sign": "d6c42925bd10b0a1d98407280cba0728", 
     "batchReq": {
         "reqs": [
@@ -58,7 +58,7 @@ GMEX官方的生产环境：
 
 ```
 ```json
-# 回应请求消息
+// 回应请求消息
 {
     "channelId": "1", 
     "code": 0, 
@@ -95,27 +95,31 @@ GMEX官方的生产环境：
 
 用户发送和接收到的所有消息统一采用JSON格式，发送请求的消息参数说明：
 
+
 |请求包体参数| 描述|
-| :-----   | :-----   |apiKey
+| :---  | :---|
 |channelId|合作伙伴的渠道id，接入之前，请先联系我方运营索取资金的渠道Id|
 |apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey|
 |sign|请求消息的签名，签名方法如下：<br>  md5(apiKey + [req.AcntFrom.Uid + req.AcntTo.Uid + req.Num + req.Coin])<br>方括号里为batchReq里面的所有请求循环累加|
 |batchReq|存放的请求批处理列表|
 
+
 转账请求的结构定义如下：
 ```golang
 // rpc请求： 处理用户之间转账相关业务
 type TransferReq struct {
-	Seq       string      // 见补充说明： 【CCS订单号补充规则】
-	PeerSeq   string      // 可以带一个对应的订单号
-	Coin      string      // 要划转的币种
-	Num       string      // 要划转的数量
-	Fee       string      // 费用1（充转出者账上扣除）
-	Fee2      string      // 费用2（充收款者账上扣除）
-	AcntFrom  *CcsAccount // 转出方
-	AcntTo    *CcsAccount // 收款方
-	CcsPasswd string      // 如果是用户间转账需带密码（代理服务器可以自动添加）
-	Info      string      // 操作信息
+	Seq         string      // 见补充说明： 【CCS订单号补充规则】
+	PeerSeq     string      // 可以带一个对应的订单号
+	Coin        string      // 要划转的币种
+	Num         string      // 要划转的数量
+	Fee         string      // 费用1（从转出者账上扣除）
+	Fee2        string      // 费用2（从收款者账上扣除）
+	FeeUId      string      // 收取费用的账号UId（收取的费用将会保存到该账户上）
+	AcntFrom    *CcsAccount // 转出方
+	AcntTo      *CcsAccount // 收款方
+	CcsPasswd   string      // 如果是用户间转账需带密码（代理服务器可以自动添加）
+	Info        string      // 操作信息
+	RecordType  int32       // 保存资金记录的栏目（默认值0不记录，1-充值历史，2-提现历史，3-手续费返还，4-资金划转，5-其他）
 }
 
 ```
@@ -141,7 +145,7 @@ type TransferReq struct {
 |:------|:------|
 | 3       | 钱包流通账户 |
 | 4       | 锁定币（矿池） |
-| 5       | OTC账户 |
+| 5       | OTC账户 | 
 | 6       | OTC锁定 |
 | 7       | 理财账户 |
 | 8       | OTC账户 |
