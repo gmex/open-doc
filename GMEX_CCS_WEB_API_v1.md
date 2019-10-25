@@ -17,7 +17,6 @@ GMEX官方的生产环境：
 
 请求回应数据示例
 ```json
-// 发送请求消息
 {
     "channelId": "1", 
     "apiKeyId":"4SAAAB%67RhcZhZzD3JFZqRbABZA",
@@ -58,7 +57,6 @@ GMEX官方的生产环境：
 
 ```
 ```json
-// 回应请求消息
 {
     "channelId": "1", 
     "code": 0, 
@@ -108,18 +106,19 @@ GMEX官方的生产环境：
 ```golang
 // rpc请求： 处理用户之间转账相关业务
 type TransferReq struct {
-	Seq         string      // 见补充说明： 【CCS订单号补充规则】
-	PeerSeq     string      // 可以带一个对应的订单号
-	Coin        string      // 要划转的币种
-	Num         string      // 要划转的数量
-	Fee         string      // 费用1（从转出者账上扣除）
-	Fee2        string      // 费用2（从收款者账上扣除）
-	FeeUId      string      // 收取费用的账号UId（收取的费用将会保存到该账户上）
-	AcntFrom    *CcsAccount // 转出方
-	AcntTo      *CcsAccount // 收款方
-	CcsPasswd   string      // 如果是用户间转账需带密码（代理服务器可以自动添加）
-	Info        string      // 操作信息
-	RecordType  int32       // 保存资金记录的栏目（默认值0不记录，1-充值历史，2-提现历史，3-手续费返还，4-资金划转，5-其他）
+	Seq         string      // 【必填字段】见补充说明： 【CCS订单号补充规则】
+	AcntFrom    *CcsAccount // 【必填字段】转出方
+	AcntTo      *CcsAccount // 【必填字段】收款方
+	Coin        string      // 【必填字段】要划转的币种
+	Num         string      // 【必填字段】要划转的数量
+	Info        string      // 【必填字段】操作信息，必须是英文，长度不超过20字符
+
+	PeerSeq     string      // 【选填】可以带一个对应自己系统的订单号以供查询
+	Fee         string      // 【选填】费用1（从转出者账上扣除）
+	Fee2        string      // 【选填】费用2（从收款者账上扣除）
+	FeeUId      string      // 【选填】收取费用的账号UId（收取的费用将会保存到该账户上）
+	CcsPasswd   string      // 【选填】如果是用户间转账需带密码（代理服务器可以自动添加）
+	RecordType  int32       // 【选填】保存资金记录的栏目（默认值0不记录，1-充值历史，2-提现历史，3-手续费返还，4-资金划转，5-其他）
 }
 
 ```
