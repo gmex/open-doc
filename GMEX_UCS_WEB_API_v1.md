@@ -120,9 +120,10 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 |apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey|
 |opType|**操作方式**： <br> **"dp01"**:合约入金  <br>**"dp02"**:币币入金<br>  **"wd01"**:合约出金<br>  **"wd02"**:合约出金|
 |token|用户通过授权接口获得的token|
+|reqOrderId|请求操作的订单号，不可重复，可用来防止重复操作以及对账，就算操作失败也不能重复使用，如果传空的值，可以跳过检测|
 |coin|出入金的币种（全部大写）|
 |num|出入金的数量（精度说明：整数位无限制，小数位最多8位）|
-|sign|请求消息的签名，签名方法如下：<br>   **md5($apiKey+$opType+$token+$coin+$num)**|
+|sign|请求消息的签名，签名方法如下：<br>   **md5($apiKey+$opType+$token+$reqOrderId+$coin+$num)**|
 
 
 #### 请求数据示例：
@@ -131,6 +132,7 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
     "apiKeyId" : "4SAAAB%67RhcZhZzD3JFZqRbABZA", 
     "opType" : "dp01",
     "token": "PgAAmDupoZkMkYljZjIgxbhcjXtrO4mNpjK5xphnaGQ7HHqxzXYTs8gKRg==", 
+    "reqOrderId" : "20191031165959003xzhLxd2312232",
     "coin" : "BTC",
     "num" : "1.00002",
     "sign": "d6c42925bd10b0a1d98407280cba0728"
@@ -173,4 +175,5 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 | 7023       |  EMAIL_FORMAT_ERROR          | 邮件格式错误 |
 | 7024       |  PHONE_FORMAT_ERROR          | 手机号格式错误，示例：0086-13812345678 |
 | 7025       |  INPUT_PARA_ERROR            | 参数输入错误(比如数字输入了字符串，必填参数为空等) |
+| 7026       |  ORDER_ID_EXISTS             | 出入金操作，订单号重复 |
 
