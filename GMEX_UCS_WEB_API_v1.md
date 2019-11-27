@@ -11,6 +11,7 @@
 官方网址： https://www.gmex.io
 用户授权服务： https://ucs-web.gmex.io/gaea/auth
 token验证服务： https://ucs-web.gmex.io/gaea/chktkn
+用户切换语言服务： https://ucs-web.gmex.io/gaea/lang
 用户出入金服务： https://ucs-web.gmex.io/gaea/trsf
 
 ```
@@ -112,6 +113,36 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 {
     "code": 7020, 
     "msg": "TOKEN_DATA_ERROR"
+}
+```
+
+### 用户切换语言服务接口：
+|请求包体参数| 描述|
+| :---  | :---|
+|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey|
+|token|用户通过授权接口获得的token|
+|lang|用户切换到的目标语言的字母缩写，<br>已定义的语言缩写：中文-zh， 台湾-tw， 日语-jp， 英语-en， 韩语-kr， 法语-fr， 俄语-ru， 德语-de， 越南语-vn， 西班牙语-es， 葡萄牙语-pt， 阿拉伯语-ar， 印度语-in， 土耳其语-tr， 泰语-th
+|
+
+#### 请求数据示例：
+```json
+{
+    "apiKeyId": "4SAAAB%67RhcZhZzD3JFZqRbABZA", 
+    "token": "PgAAmDupoZkMkYljZjIgxbhcjXtrO4mNpjK5xphnaGQ7HHqxzXYTs8gKRg==",
+    "lang": "zh"  
+}
+```
+
+|回应包体参数| 描述|
+| :-----   | :-----   |
+|code|请求错误码，见下方【请求包的回应错误码说明】|
+|msg|错误码对应的字符串说明|
+
+#### 操作有效，回应数据示例：
+```json
+{
+    "code": 0, 
+    "msg": "NO_ERROR" 
 }
 ```
 
