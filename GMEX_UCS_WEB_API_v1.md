@@ -105,6 +105,7 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
     "code": 0, 
     "msg": "NO_ERROR", 
     "token": "PgAAmDupoZkMkYljZjIgxbhcjXtrO4mNpjK5xphnaGQ7HHqxzXYTs8gKRg==", 
+    "GaeaUId": "1122333",
     "leftSeconds": 1234
 }
 ```
