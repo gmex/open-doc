@@ -97,6 +97,7 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 |code|请求错误码，见下方【请求包的回应错误码说明】|
 |msg|错误码对应的字符串说明|
 |token|如果token是有效的话，回发请求的token|
+|gaeaUId|用户在gaea账户体系中的UId|
 |leftSeconds|如果token是有效的话，token剩余的有效时间，单位秒|
 
 #### token有效，回应数据示例：
@@ -105,6 +106,7 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
     "code": 0, 
     "msg": "NO_ERROR", 
     "token": "PgAAmDupoZkMkYljZjIgxbhcjXtrO4mNpjK5xphnaGQ7HHqxzXYTs8gKRg==", 
+    "GaeaUId": "1122333",
     "leftSeconds": 1234
 }
 ```
