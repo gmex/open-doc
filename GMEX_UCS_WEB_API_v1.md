@@ -28,7 +28,7 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 ### 用户授权服务接口：
 |请求包体参数| 描述|
 | :---  | :---|
-|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey|
+|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey。测试代码用的apiKey见文档末表格|
 |uid|用户在合作伙伴的账号体系中的uid|
 |email|【**选填参数，可在首次关联账号时传**】：用户的邮件地址，可以用来发送爆仓或风险预警通知|
 |phone|【**选填参数，可在首次关联账号时传**】：用户的电话号码，可以用来发送爆仓或风险预警通知，格式示例：0086-13812345678|
@@ -81,7 +81,7 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 ### 验证token服务接口：
 |请求包体参数| 描述|
 | :---  | :---|
-|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey|
+|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey，测试代码用的apiKey见文档末表格|
 |token|用户通过授权接口获得的token|
 
 #### 请求数据示例：
@@ -121,7 +121,7 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 ### 用户切换语言服务接口：
 |请求包体参数| 描述|
 | :---  | :---|
-|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey|
+|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey，测试代码用的apiKey见文档末表格|
 |token|用户通过授权接口获得的token|
 |lang|用户切换到的目标语言的字母缩写，<br>已定义的语言缩写：中文-zh， 台湾-tw， 日语-jp， 英语-en， 韩语-kr， 法语-fr， 俄语-ru， 德语-de， 越南语-vn， 西班牙语-es， 葡萄牙语-pt， 阿拉伯语-ar， 印度语-in， 土耳其语-tr， 泰语-th
 |
@@ -152,7 +152,7 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 ### 用户出入金服务
 |请求包体参数| 描述|
 | :---  | :---|
-|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey|
+|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey，测试代码用的apiKey见文档末表格|
 |opType|**操作方式**： <br> **"dp01"**:合约入金  <br>**"dp02"**:币币入金<br>  **"wd01"**:合约出金<br>  **"wd02"**:币币出金|
 |token|需要处理出入金的用户，通过授权接口获得的token|
 |gaeaUid|需要处理出入金的用户，在gaea系统内的Uid，优先取token参数，如果token参数不为空的话，此字段不生效|
@@ -196,8 +196,6 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 ```
 
 
-
-
 ### 请求包的回应错误码说明
 | ErrCode| ErrTxt | 描述 |
 |:------:|:------|:------|
@@ -215,3 +213,10 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 | 7026       |  ORDER_ID_EXISTS             | 出入金操作，订单号重复 |
 | 7027       |  USER_NOT_EXISTS             | 出入金操作，用户不存在 |
 
+
+### 测试用apiKey
+注意：传参数用APIKeyId，签名用APIKey
+
+| APIKeyId| APIKey | 渠道号 |
+|:------:|:------|:------|
+| uTQAAg0$unGYzC9qYsznB3bCBBaE| 6UAAAHHruk2bMLLZMZ8nBu1gGPvi6uenNwTRYLyzksmdX0OSG3Wa44g5V | 3 |
