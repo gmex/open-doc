@@ -215,8 +215,11 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 
 
 ### 测试用apiKey
-注意：传参数用APIKeyId，签名用APIKey
 
-| APIKeyId| APIKey | 渠道号 |
-|:------:|:------|:------|
-| uTQAAg0$unGYzC9qYsznB3bCBBaE| 6UAAAHHruk2bMLLZMZ8nBu1gGPvi6uenNwTRYLyzksmdX0OSG3Wa44g5V | 3 |
+
+| 字段 | 内容 | 
+|:------:|:------|
+|测试APIKeyId| uTQAAg0$unGYzC9qYsznB3bCBBaE|
+|测试APIKey| 6UAAAHHruk2bMLLZMZ8nBu1gGPvi6uenNwTRYLyzksmdX0OSG3Wa44g5V | 
+|测试渠道号| 3 |
+| 说明 | 传参数用APIKeyId，签名用APIKey |  
