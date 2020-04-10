@@ -98,7 +98,7 @@ GMEX官方的生产环境：
 | :---  | :---|
 |channelId|合作伙伴的渠道id，接入之前，请先联系我方运营索取资金的渠道Id|
 |apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey|
-|sign|请求消息的签名，签名方法如下：<br>  md5(apiKey + [req.AcntFrom.Uid + req.AcntTo.Uid + req.Num + req.Coin])<br>方括号里为batchReq里面的所有请求循环累加|
+|sign|请求消息的签名，签名方法如下：<br>  md5(apiKey + [req.AcntFrom.Uid + req.AcntTo.Uid + req.Num + req.Coin])<br>方括号本身不用加入签名，方括号里面里为batchReq里面的所有请求循环累加|
 |batchReq|存放的请求批处理列表|
 
 

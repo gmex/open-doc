@@ -9,13 +9,17 @@
 
 ```txt
 官方网址： https://www.gmex.io
-用户授权服务： https://ucs-web.gmex.io/gaea/auth
-用户登出服务： https://ucs-web.gmex.io/gaea/lgot
-token验证服务： https://ucs-web.gmex.io/gaea/chktkn
-用户切换语言服务： https://ucs-web.gmex.io/gaea/lang
-用户出入金服务： https://ucs-web.gmex.io/gaea/trsf
+必需接口：
+1.用户授权服务： https://ucs-web.gmex.io/gaea/auth
+2.用户出入金服务： https://ucs-web.gmex.io/gaea/trsf
 
+可选接口：
+3.用户登出服务： https://ucs-web.gmex.io/gaea/lgot
+4.token验证服务： https://ucs-web.gmex.io/gaea/chktkn
+5.用户切换语言服务： https://ucs-web.gmex.io/gaea/lang
+6.用户资产查询服务： https://ucs-web.gmex.io/gaea/qast
 ```
+
 流程说明图  
 
 ![Image text](https://github.com/gmex/open-doc/blob/master/desc_token.png?raw=true)
@@ -26,11 +30,12 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 用户发送和接收到的所有消息统一采用JSON格式，发送请求的消息参数说明：
 
 
-### 用户授权服务接口：
+### 1.用户授权服务接口：
 |请求包体参数| 描述|
 | :---  | :---|
 |apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey。测试代码用的apiKey见文档末表格|
 |uid|用户在合作伙伴的账号体系中的uid|
+|timeOut|**选填参数**，token有效时间（秒），不传默认15天有效期|
 |email|【**选填参数，可在首次关联账号时传**】：用户的邮件地址，可以用来发送爆仓或风险预警通知|
 |phone|【**选填参数，可在首次关联账号时传**】：用户的电话号码，可以用来发送爆仓或风险预警通知，格式示例：0086-13812345678|
 |upd|【**选填参数，可在更改用户信息时传**】：用来指定是否修改用户数据（首次关联时无需此参数），0-默认值，不更新，1-更新用户邮箱，2-更新手机号
@@ -41,12 +46,14 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 #### 请求回应数据示例：
 ```json
 {
-    "apiKeyId": "4SAAAB%67RhcZhZzD3JFZqRbABZA", 
-    "uid": "666666", 
+    "apiKeyId": "uTQAAg0$unGYzC9qYsznB3bCBBaE", 
+    "uid": "666666",
+    "timeOut": 360000, 
     "email": "xxx@gmail.com", 
     "phone": "0086-13812345678", 
     "upd": 0, 
-    "sign": "d6c42925bd10b0a1d98407280cba0728"
+    "ts": 1586502220,
+    "sign": "32e786c6d993e011140b102bf8684253"
 }
 
 ```
@@ -79,109 +86,7 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 }
 ```
 
-
-### 用户登出服务接口：
-#### 当用户在合作方账户体系中退出时，可以回调此接口，我方服务器将会断开用户交易的web socket连接，保证用户确实退出。
-|请求包体参数| 描述|
-| :---  | :---|
-|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey，测试代码用的apiKey见文档末表格|
-|token|用户通过授权接口获得的token|
-
-
-#### 请求数据示例：
-```json
-{
-    "apiKeyId": "4SAAAB%67RhcZhZzD3JFZqRbABZA", 
-    "token": "PgAAmDupoZkMkYljZjIgxbhcjXtrO4mNpjK5xphnaGQ7HHqxzXYTs8gKRg==",
-}
-```
-
-|回应包体参数| 描述|
-| :-----   | :-----   |
-|code|请求错误码，见下方【请求包的回应错误码说明】|
-|msg|错误码对应的字符串说明|
-
-#### 操作有效，回应数据示例：
-```json
-{
-    "code": 0, 
-    "msg": "NO_ERROR" 
-}
-```
-
-
-### 验证token服务接口：
-|请求包体参数| 描述|
-| :---  | :---|
-|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey，测试代码用的apiKey见文档末表格|
-|token|用户通过授权接口获得的token|
-
-#### 请求数据示例：
-```json
-{
-    "apiKeyId": "4SAAAB%67RhcZhZzD3JFZqRbABZA", 
-    "token": "PgAAmDupoZkMkYljZjIgxbhcjXtrO4mNpjK5xphnaGQ7HHqxzXYTs8gKRg==" 
-}
-```
-
-|回应包体参数| 描述|
-| :-----   | :-----   |
-|code|请求错误码，见下方【请求包的回应错误码说明】|
-|msg|错误码对应的字符串说明|
-|token|如果token是有效的话，回发请求的token|
-|gaeaUId|用户在gaea账户体系中的UId|
-|leftSeconds|如果token是有效的话，token剩余的有效时间，单位秒|
-
-#### token有效，回应数据示例：
-```json
-{
-    "code": 0, 
-    "msg": "NO_ERROR", 
-    "token": "PgAAmDupoZkMkYljZjIgxbhcjXtrO4mNpjK5xphnaGQ7HHqxzXYTs8gKRg==", 
-    "GaeaUId": "1122333",
-    "leftSeconds": 1234
-}
-```
-#### token无效，回应数据示例：
-```json
-{
-    "code": 7020, 
-    "msg": "TOKEN_DATA_ERROR"
-}
-```
-
-### 用户切换语言服务接口：
-|请求包体参数| 描述|
-| :---  | :---|
-|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey，测试代码用的apiKey见文档末表格|
-|token|用户通过授权接口获得的token|
-|lang|用户切换到的目标语言的字母缩写，<br>已定义的语言缩写：中文-zh， 台湾-tw， 日语-jp， 英语-en， 韩语-kr， 法语-fr， 俄语-ru， 德语-de， 越南语-vn， 西班牙语-es， 葡萄牙语-pt， 阿拉伯语-ar， 印度语-in， 土耳其语-tr， 泰语-th
-
-
-#### 请求数据示例：
-```json
-{
-    "apiKeyId": "4SAAAB%67RhcZhZzD3JFZqRbABZA", 
-    "token": "PgAAmDupoZkMkYljZjIgxbhcjXtrO4mNpjK5xphnaGQ7HHqxzXYTs8gKRg==",
-    "lang": "zh"  
-}
-```
-
-|回应包体参数| 描述|
-| :-----   | :-----   |
-|code|请求错误码，见下方【请求包的回应错误码说明】|
-|msg|错误码对应的字符串说明|
-
-#### 操作有效，回应数据示例：
-```json
-{
-    "code": 0, 
-    "msg": "NO_ERROR" 
-}
-```
-
-
-### 用户出入金服务
+### 2.用户出入金服务
 |请求包体参数| 描述|
 | :---  | :---|
 |apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey，测试代码用的apiKey见文档末表格|
@@ -226,6 +131,224 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
     "orderId": "20191031165959003xzhLGIFT"
 }
 ```
+
+
+
+### 3.用户登出服务接口：
+#### 当用户在合作方账户体系中退出时，可以回调此接口，我方服务器将会断开用户交易的web socket连接，保证用户确实退出。
+|请求包体参数| 描述|
+| :---  | :---|
+|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey，测试代码用的apiKey见文档末表格|
+|token|用户通过授权接口获得的token|
+|ts|unix时间戳（秒），请尽量保证时间准确，误差过大（比如超过10分钟），请求有可能会被服务器丢弃|
+|sign|请求消息的签名，签名方法如下：<br>   **md5($apiKey+$token+$ts)**|
+
+
+#### 请求数据示例：
+```json
+{
+    "apiKeyId":"uTQAAg0$unGYzC9qYsznB3bCBBaE",
+    "token":"GQAADdmxxo1sbNg7MZhizIGGjcmzM7nOcJ6F5XaaO8QHTA==",
+    "ts":1586503865,
+    "sign":"d4cac81384e183d3878391ef2384f33a"
+}
+```
+
+|回应包体参数| 描述|
+| :-----   | :-----   |
+|code|请求错误码，见下方【请求包的回应错误码说明】|
+|msg|错误码对应的字符串说明|
+
+#### 操作有效，回应数据示例：
+```json
+{
+    "code": 0, 
+    "msg": "NO_ERROR" 
+}
+```
+
+
+### 4.验证token服务接口：
+|请求包体参数| 描述|
+| :---  | :---|
+|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey，测试代码用的apiKey见文档末表格|
+|token|用户通过授权接口获得的token|
+
+#### 请求数据示例：
+```json
+{
+    "apiKeyId": "4SAAAB%67RhcZhZzD3JFZqRbABZA", 
+    "token": "PgAAmDupoZkMkYljZjIgxbhcjXtrO4mNpjK5xphnaGQ7HHqxzXYTs8gKRg==" 
+}
+```
+
+|回应包体参数| 描述|
+| :-----   | :-----   |
+|code|请求错误码，见下方【请求包的回应错误码说明】|
+|msg|错误码对应的字符串说明|
+|token|如果token是有效的话，回发请求的token|
+|gaeaUId|用户在gaea账户体系中的UId|
+|leftSeconds|如果token是有效的话，token剩余的有效时间，单位秒|
+
+#### token有效，回应数据示例：
+```json
+{
+    "code": 0, 
+    "msg": "NO_ERROR", 
+    "token": "PgAAmDupoZkMkYljZjIgxbhcjXtrO4mNpjK5xphnaGQ7HHqxzXYTs8gKRg==", 
+    "GaeaUId": "1122333",
+    "leftSeconds": 1234
+}
+```
+#### token无效，回应数据示例：
+```json
+{
+    "code": 7020, 
+    "msg": "TOKEN_DATA_ERROR"
+}
+```
+
+### 5.用户切换语言服务接口：
+|请求包体参数| 描述|
+| :---  | :---|
+|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey，测试代码用的apiKey见文档末表格|
+|token|用户通过授权接口获得的token|
+|lang|用户切换到的目标语言的字母缩写，<br>已定义的语言缩写：中文-zh， 台湾-tw， 日语-jp， 英语-en， 韩语-kr， 法语-fr， 俄语-ru， 德语-de， 越南语-vn， 西班牙语-es， 葡萄牙语-pt， 阿拉伯语-ar， 印度语-in， 土耳其语-tr， 泰语-th
+
+
+#### 请求数据示例：
+```json
+{
+    "apiKeyId": "4SAAAB%67RhcZhZzD3JFZqRbABZA", 
+    "token": "PgAAmDupoZkMkYljZjIgxbhcjXtrO4mNpjK5xphnaGQ7HHqxzXYTs8gKRg==",
+    "lang": "zh"  
+}
+```
+
+|回应包体参数| 描述|
+| :-----   | :-----   |
+|code|请求错误码，见下方【请求包的回应错误码说明】|
+|msg|错误码对应的字符串说明|
+
+#### 操作有效，回应数据示例：
+```json
+{
+    "code": 0, 
+    "msg": "NO_ERROR" 
+}
+```
+
+### 6.用户查询资产：
+|请求包体参数| 描述|
+| :---  | :---|
+|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey，测试代码用的apiKey见文档末表格|
+|token|用户通过授权接口获得的token|
+|assetType|用户查询资产种类： 合约资产-"01"，币币资产-"02"
+|ts|unix时间戳（秒），请尽量保证时间准确，误差过大（比如超过10分钟），请求有可能会被服务器丢弃|
+|sign|请求消息的签名，签名方法如下：<br>   **md5($apiKey+$token+$assetType+$ts)**|
+
+
+#### 请求数据示例：
+```json
+{
+    "apiKeyId":"uTQAAg0$unGYzC9qYsznB3bCBBaE",
+    "token":"OwAAaJ0bNhsbbBt2YpiJmQM0G5M7jM12HJ6YYDfszsQHXg==",
+    "assetType":"01",
+    "ts":1586506720,
+    "sign":"247963494754ec1ca3857650a7639853"
+}
+```
+
+|回应包体参数| 描述|
+| :-----   | :-----   |
+|code|请求错误码，见下方【请求包的回应错误码说明】|
+|msg|错误码对应的字符串说明|
+|token|回传请求的token|
+|wlts|钱包数据（具体含义以及处理见前端标准版代码）|
+|poss|持仓数据（具体含义以及处理见前端标准版代码）|
+
+#### 操作有效，回应数据示例：
+```json
+{
+    "code": 0,
+    "msg": "NO_ERROR",
+    "token": "",
+    "wlts": [
+        {
+            "UId": "1137099",
+            "AId": "113709901",
+            "Coin": "USDT",
+            "WId": "113709901USDT",
+            "Depo": 0,
+            "WDrw": 0,
+            "PNL": 0,
+            "Frz": 0,
+            "Spot": 0,
+            "Gift": 0,
+            "PNLG": 0,
+            "Status": 2,
+            "Flg": 6144,
+            "DF": 289
+        }
+    ],
+    "poss": [
+        {
+            "UId": "1024907",
+            "PId": "01E38V9EDFWJE2MPGCMA11ZM4Z",
+            "AId": "102490701",
+            "Sym": "BCH.USDT@21",
+            "WId": "102490701USDT",
+            "Sz": 2400.00,
+            "PrzIni": 136.53,
+            "RPNL": 15089.074606456912,
+            "MgnISO": 0,
+            "PNLISO": 0,
+            "LeverMax": 100,
+            "MMR": 0.005,
+            "MIR": 0.01,
+            "Val": 16383.6,
+            "MMnF": 81.918,
+            "UPNL": 10230.939530523603,
+            "PrzLiq": 0.01,
+            "PrzBr": 0.01,
+            "FeeEst": 13.3072697652618,
+            "MIRMy": 0.01,
+            "ROE": 0.6244622384899291,
+            "ADLIdx": 0.6244903955985741,
+            "ADLLight": 4,
+            "DF": 288
+        },
+        {
+            "UId": "1024907",
+            "PId": "01E38TSD43YZA4A49T4GHRM26R",
+            "AId": "102490701",
+            "Sym": "ETH.USDT@21",
+            "WId": "102490701USDT",
+            "Sz": 4970.00,
+            "PrzIni": 88.82,
+            "RPNL": 0.16063636006226167,
+            "MgnISO": 0,
+            "PNLISO": 0,
+            "LeverMax": 100,
+            "MMR": 0.005,
+            "MIR": 0.01,
+            "Val": 44143.5399999,
+            "MMnF": 220.71769988,
+            "UPNL": 24176.229983015328,
+            "PrzLiq": 0.01,
+            "PrzBr": 0.01,
+            "FeeEst": 34.15988499150767,
+            "MIRMy": 0.01,
+            "ROE": 0.5476731132803425,
+            "ADLIdx": 0.5477129572874402,
+            "ADLLight": 4,
+            "DF": 288
+        }
+    ]
+}
+
+```
+
 
 
 ### 请求包的回应错误码说明
