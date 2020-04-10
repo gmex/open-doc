@@ -10,6 +10,7 @@
 ```txt
 官方网址： https://www.gmex.io
 用户授权服务： https://ucs-web.gmex.io/gaea/auth
+用户登出服务： https://ucs-web.gmex.io/gaea/lgot
 token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 用户切换语言服务： https://ucs-web.gmex.io/gaea/lang
 用户出入金服务： https://ucs-web.gmex.io/gaea/trsf
@@ -33,7 +34,8 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 |email|【**选填参数，可在首次关联账号时传**】：用户的邮件地址，可以用来发送爆仓或风险预警通知|
 |phone|【**选填参数，可在首次关联账号时传**】：用户的电话号码，可以用来发送爆仓或风险预警通知，格式示例：0086-13812345678|
 |upd|【**选填参数，可在更改用户信息时传**】：用来指定是否修改用户数据（首次关联时无需此参数），0-默认值，不更新，1-更新用户邮箱，2-更新手机号
-|sign|请求消息的签名，签名方法如下：<br>   **md5($apiKey+$uid)**|
+|ts|unix时间戳（秒），请尽量保证时间准确，误差过大（比如超过10分钟），请求有可能会被服务器丢弃|
+|sign|请求消息的签名，签名方法如下：<br>   **md5($apiKey+$uid)** <br> 2020-04-10开始修改为新签名，旧的签名兼容到2020年4月底<br> **md5($apiKey+$uid+$email+$phone+$ts)**|
 
 
 #### 请求回应数据示例：
@@ -74,6 +76,36 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 {
     "code": 7017, 
     "msg": "SIGN_ERROR"
+}
+```
+
+
+### 用户登出服务接口：
+#### 当用户在合作方账户体系中退出时，可以回调此接口，我方服务器将会断开用户交易的web socket连接，保证用户确实退出。
+|请求包体参数| 描述|
+| :---  | :---|
+|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey，测试代码用的apiKey见文档末表格|
+|token|用户通过授权接口获得的token|
+
+
+#### 请求数据示例：
+```json
+{
+    "apiKeyId": "4SAAAB%67RhcZhZzD3JFZqRbABZA", 
+    "token": "PgAAmDupoZkMkYljZjIgxbhcjXtrO4mNpjK5xphnaGQ7HHqxzXYTs8gKRg==",
+}
+```
+
+|回应包体参数| 描述|
+| :-----   | :-----   |
+|code|请求错误码，见下方【请求包的回应错误码说明】|
+|msg|错误码对应的字符串说明|
+
+#### 操作有效，回应数据示例：
+```json
+{
+    "code": 0, 
+    "msg": "NO_ERROR" 
 }
 ```
 
@@ -124,7 +156,7 @@ token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 |apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey，测试代码用的apiKey见文档末表格|
 |token|用户通过授权接口获得的token|
 |lang|用户切换到的目标语言的字母缩写，<br>已定义的语言缩写：中文-zh， 台湾-tw， 日语-jp， 英语-en， 韩语-kr， 法语-fr， 俄语-ru， 德语-de， 越南语-vn， 西班牙语-es， 葡萄牙语-pt， 阿拉伯语-ar， 印度语-in， 土耳其语-tr， 泰语-th
-|
+
 
 #### 请求数据示例：
 ```json
