@@ -9,6 +9,10 @@
 
 ```txt
 官方网址： https://www.gmex.io
+
+正式环境接口地址： https://ucs-web.gmex.io/
+测试环境接口地址： http://eeeecloud.com:8086/
+
 必需接口：
 1.用户授权服务： https://ucs-web.gmex.io/gaea/auth
 2.用户出入金服务： https://ucs-web.gmex.io/gaea/trsf
@@ -18,6 +22,9 @@
 4.token验证服务： https://ucs-web.gmex.io/gaea/chktkn
 5.用户切换语言服务： https://ucs-web.gmex.io/gaea/lang
 6.用户资产查询服务： https://ucs-web.gmex.io/gaea/qast
+7.修改用户数据服务： https://ucs-web.gmex.io/gaea/mdfus
+
+
 ```
 
 流程说明图  
@@ -36,11 +43,11 @@
 |apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey。测试代码用的apiKey见文档末表格|
 |uid|用户在合作伙伴的账号体系中的uid|
 |timeOut|**选填参数**，token有效时间（秒），不传默认15天有效期|
-|email|【**选填参数，可在首次关联账号时传**】：用户的邮件地址，可以用来发送爆仓或风险预警通知|
-|phone|【**选填参数，可在首次关联账号时传**】：用户的电话号码，可以用来发送爆仓或风险预警通知，格式示例：0086-13812345678|
-|upd|【**选填参数，可在更改用户信息时传**】：用来指定是否修改用户数据（首次关联时无需此参数），0-默认值，不更新，1-更新用户邮箱，2-更新手机号
+|email|【**选填参数，仅首次关联账号时有效**】：用户的邮件地址，可以用来发送爆仓或风险预警通知|
+|phone|【**选填参数，仅首次关联账号时有效**】：用户的电话号码，可以用来发送爆仓或风险预警通知，格式示例：0086-13812345678|
+|upd|【**废弃参数，请使用修改用户资料接口来处理**】：用来指定是否修改用户数据（首次关联时无需此参数），0-默认值，不更新，1-更新用户邮箱，2-更新手机号
 |ts|unix时间戳（秒），请尽量保证时间准确，误差过大（比如超过10分钟），请求有可能会被服务器丢弃|
-|sign|请求消息的签名，签名方法如下：<br>  **md5($apiKey+$uid+$email+$phone+$ts)**|
+|sign|请求消息的签名，签名方法如下：<br>  **md5($apiKey+$uid+$pUid+$email+$phone+$ts)**|
 
 
 #### 请求回应数据示例：
@@ -51,7 +58,6 @@
     "timeOut": 360000, 
     "email": "xxx@gmail.com", 
     "phone": "0086-13812345678", 
-    "upd": 0, 
     "ts": 1586502220,
     "sign": "32e786c6d993e011140b102bf8684253"
 }
@@ -102,7 +108,7 @@
 #### 请求数据示例：
 ```json
 {
-    "apiKeyId" : "4SAAAB%67RhcZhZzD3JFZqRbABZA", 
+    "apiKeyId" : "uTQAAg0$unGYzC9qYsznB3bCBBaE", 
     "opType" : "dp01",
     "token": "PgAAmDupoZkMkYljZjIgxbhcjXtrO4mNpjK5xphnaGQ7HHqxzXYTs8gKRg==", 
     "gaeaUid": "112233", 
@@ -177,7 +183,7 @@
 #### 请求数据示例：
 ```json
 {
-    "apiKeyId": "4SAAAB%67RhcZhZzD3JFZqRbABZA", 
+    "apiKeyId": "uTQAAg0$unGYzC9qYsznB3bCBBaE", 
     "token": "PgAAmDupoZkMkYljZjIgxbhcjXtrO4mNpjK5xphnaGQ7HHqxzXYTs8gKRg==" 
 }
 ```
@@ -219,7 +225,7 @@
 #### 请求数据示例：
 ```json
 {
-    "apiKeyId": "4SAAAB%67RhcZhZzD3JFZqRbABZA", 
+    "apiKeyId": "uTQAAg0$unGYzC9qYsznB3bCBBaE", 
     "token": "PgAAmDupoZkMkYljZjIgxbhcjXtrO4mNpjK5xphnaGQ7HHqxzXYTs8gKRg==",
     "lang": "zh"  
 }
@@ -351,6 +357,63 @@
 
 
 
+### 7.修改用户数据服务接口：
+|请求包体参数| 描述|
+| :---  | :---|
+|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey。测试代码用的apiKey见文档末表格|
+|opType|**操作方式**： <br> **1**:设置上级关系  <br>**2**:修改用户手机号<br>  **3**:修改用户邮箱|
+|gaeaUid|用户在gaea的账号体系中的uid|
+|pGaeaUid|【**选填参数**】，上级用户的gaeaUid，只能在没有关系时设置，如果传必须是有效uid，否则报错|
+|email|【**选填参数**】：用户的邮件地址，可以用来发送爆仓或风险预警通知|
+|phone|【**选填参数**】：用户的电话号码，可以用来发送爆仓或风险预警通知，格式示例：0086-13812345678|
+|ts|unix时间戳（秒），请尽量保证时间准确，误差过大（比如超过10分钟），请求有可能会被服务器丢弃|
+|sign|请求消息的签名，签名方法如下：<br>  **md5($apiKey+$opType+$gaeaUid+$pGaeaUid+$email+$phone+$ts)**|
+
+
+#### 请求回应数据示例：
+```json
+
+{
+  "apiKeyId":"uTQAAg0$unGYzC9qYsznB3bCBBaE",
+  "opType":1,
+  "gaeaUid":"666666",
+  "pGaeaUid":"111",
+  "email":"xxx@gmail.com",
+  "phone":"0086-13812345678",
+  "ts":1589288384,
+  "sign":"a9a63d4ba12e038a77e252beafba65d1"
+}
+
+```
+
+|回应包体参数| 描述|
+| :-----   | :-----   |
+|code|请求错误码，见下方【请求包的回应错误码说明】|
+|msg|错误码对应的字符串说明|
+|reqUid|请求时提交的gaeaUid，方便数据对应|
+
+
+
+#### 正确回应示例：
+```json
+{
+    "code": 0, 
+    "msg": "NO_ERROR", 
+    "reqUid": "666666"
+}
+```
+
+#### 错误回应示例：（例子：用户不存在） 
+```json
+{
+  "code":7027,
+  "msg":"用户不存在",
+  "reqUid":"666666"
+}
+```
+
+
+
 ### 请求包的回应错误码说明
 | ErrCode| ErrTxt | 描述 |
 |:------:|:------|:------|
@@ -366,7 +429,11 @@
 | 7024       |  PHONE_FORMAT_ERROR          | 手机号格式错误，示例：0086-13812345678 |
 | 7025       |  INPUT_PARA_ERROR            | 参数输入错误(比如数字输入了字符串，必填参数为空等) |
 | 7026       |  ORDER_ID_EXISTS             | 出入金操作，订单号重复 |
-| 7027       |  USER_NOT_EXISTS             | 出入金操作，用户不存在 |
+| 7027       |  USER_NOT_EXISTS             | 出入金或设置用户资料操作，用户不存在 |
+| 7028       |  PARENT_NOT_EXISTS           | 设置上级关系时，上级用户不存在 |
+| 7029       |  PARENT_UID_EXISTS           | 设置上级关系时，关系已经存在 |
+| 7030       |  PARENT_RELATION_ERROR       | 设置上级关系时，关系错误（如上级跟下级不是一个渠道的用户） |
+| 7031       |  PARENT_FORBIDDEN            | 设置上级关系时，上级用户被禁止 |
 
 
 ### 测试用apiKey
