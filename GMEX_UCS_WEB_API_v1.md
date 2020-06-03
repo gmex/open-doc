@@ -23,6 +23,7 @@
 5.用户切换语言服务： https://ucs-web.gmex.io/gaea/lang
 6.用户资产查询服务： https://ucs-web.gmex.io/gaea/qast
 7.修改用户数据服务： https://ucs-web.gmex.io/gaea/mdfus
+8.出入金订单结果查询： https://ucs-web.gmex.io/gaea/trsfqry
 
 
 ```
@@ -134,10 +135,15 @@
     "code": 0, 
     "msg": "NO_ERROR",
     "token": "PgAAmDupoZkMkYljZjIgxbhcjXtrO4mNpjK5xphnaGQ7HHqxzXYTs8gKRg==",
+    "reqOrderId" : "201903200538330572359_ABCDE",
     "orderId": "20191031165959003xzhLGIFT"
 }
 ```
 
+#### 测试注意事项：
+**注意出入金接口一定要进行并发测试!**<br>
+1.假设用户合约账上有100USDT，同时并发发起几十笔出金交易，看下处理流程和最后的资金情况是否正常。<br>
+2.假设用户在合作方账上有100USDT，同时并发发起几十笔入金交易，看下处理流程和最后的资金情况是否正常。<br>
 
 
 ### 3.用户登出服务接口：
@@ -413,6 +419,62 @@
 ```
 
 
+### 8.出入金订单结果查询：
+|请求包体参数| 描述|
+| :---  | :---|
+|apiKeyId|合作伙伴的apiKeyId，接入之前，请先联系我方运营索取用于签名的apiKeyId和apiKey。测试代码用的apiKey见文档末表格|
+|reqOrderId|要查询的订单号，即出入金服务请求的订单号|
+|sign|请求消息的签名，签名方法如下：<br>  **md5($apiKey+$reqOrderId)**|
+
+#### 重要说明：
+如果订单号重复，不会保存重复的订单号处理状态，防止正确处理的订单号状态被覆盖。<br>
+如果有重复订单号的嫌疑查询时，请注意返回结果中的ts（订单被处理的时间戳）可以协助判断。<br>
+为了防止正确的订单号状态被覆盖，在出入金操作时，订单号防止重复流程判断之前出错后，不会保存订单被处理的状态，此类订单号查询结果应该是订单号不存在：QUERY_ORDER_ID_NOT_EXISTS。<br>
+不会被保存的状态，包括但不限于以下错误状态：JSON_UNMARSHAL_ERROR， API_KEY_ERROR， SIGN_ERROR， INPUT_PARA_ERROR， ORDER_ID_EXISTS<br>
+**注意**：订单号是否被正确处理的判断依据是：查询结果的code为0，并且返回结果里respResult字段里面的code为0
+
+#### 请求回应数据示例：
+```json
+{
+	"apiKeyId": "uTQAAg0$unGYzC9qYsznB3bCBBaE",
+	"reqOrderId": "201903200538330572359_ABCDE",
+	"sign": "54d1f0a196b8d297b2add8e4e500c078"
+}
+
+```
+
+|回应包体参数| 描述|
+| :-----   | :-----   |
+|code|请求错误码，见下方【请求包的回应错误码说明】|
+|msg|错误码对应的字符串说明|
+|respResult|在出入金请求操作时，返回的结果，以字符串形式保存|
+|peerOrders|在出入金操作时，我方关联的订单号，可以用来在后台查询相关数据|
+|ts|出入金操作被处理时的时间戳，**注意不是查询的时间戳**|
+
+
+#### 正确回应示例：
+```json
+{
+	"code": 0,
+	"msg": "NO_ERROR",
+	"respResult": "{\"code\":0,\"msg\":\"NO_ERROR\",\"token\":\"PAAAQ9ljGxs22GzOMZgxZhiGNjk7M53iyCPL6gbZYgbL\",\"reqOrderId\":\"201903200538330572359_ABCDE\",\"orderId\":\"20200603153924007mquAPIDP\"}",
+	"peerOrders": ["20200603153924007mquAPIDP", "20200603153924007mqvTOUT/20200603153924007mqwTIN"],
+	"ts": 1591169964
+}
+```
+
+#### 错误回应示例：（例子：订单不存在） 
+```json
+{
+	"code": 7033,
+	"msg": "QUERY_ORDER_ID_NOT_EXISTS",
+	"respResult": "",
+	"peerOrders": null,
+	"ts": 0
+}
+```
+
+
 
 ### 请求包的回应错误码说明
 | ErrCode| ErrTxt | 描述 |
@@ -434,6 +496,8 @@
 | 7029       |  PARENT_UID_EXISTS           | 设置上级关系时，关系已经存在 |
 | 7030       |  PARENT_RELATION_ERROR       | 设置上级关系时，关系错误（如上级跟下级不是一个渠道的用户） |
 | 7031       |  PARENT_FORBIDDEN            | 设置上级关系时，上级用户被禁止 |
+| 7032       |  PERMISSION_ERROR            | 没有权限，比如操作其他渠道用户 |
+| 7033       |  QUERY_ORDER_ID_NOT_EXISTS   | 出入金结果查询操作，订单号不存在 |
 
 
 ### 测试用apiKey
