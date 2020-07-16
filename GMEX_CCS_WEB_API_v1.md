@@ -1,14 +1,13 @@
-# GMEX CCS Web API (v1)
+# CCS Web API (v1)
 
 ## 说明
 
-目前 GMEX (<https://www.gmex.io>) 对合作伙伴提供 Web API 资金划转开发接口， 供开发者进行资金调度操作。
+目前交易所对合作伙伴提供 Web API 资金划转开发接口， 供开发者进行资金调度操作。
 
 
-GMEX官方的生产环境：
+官方的生产环境：
 
 ```txt
-官方网址： https://www.gmex.io
 资金划转服务： https://ccs-web.gmex.io/gaea/transfer
 ```
 
@@ -25,7 +24,7 @@ GMEX官方的生产环境：
         "reqs": [
             {
                 "seq": "20190429130352_1", 
-                "coin": "GAEA", 
+                "coin": "BTC", 
                 "num": "100", 
                 "acntFrom": {
                     "uid": "30000", 
@@ -39,7 +38,7 @@ GMEX官方的生产环境：
             }, 
             {
                 "seq": "20190429130352_2", 
-                "coin": "GAEA", 
+                "coin": "BTC", 
                 "num": "3111111111111111111111", 
                 "acntFrom": {
                     "uid": "1137338", 
@@ -68,9 +67,9 @@ GMEX官方的生产环境：
                 "result": { }, 
                 "wallets": [
                     {
-                        "wid": "1137338GAEA", 
+                        "wid": "1137338BTC", 
                         "uid": "1137338", 
-                        "coin": "GAEA", 
+                        "coin": "BTC", 
                         "exChannel": 1, 
                         "mainBal": "221333333334279635253.84911048000", 
                         "mainLock": "0.45000000000", 
